@@ -1,5 +1,4 @@
 from typing import Union
-import doctest
 
 
 class MusicAlbum:
@@ -96,11 +95,15 @@ class Storage:
     def choice_storage(self):
         """
         Метод возвращает носитель, на который поместится данная музыкальная коллекция
-        :return:
+        :return: Строка "CD" или "HDD"
         """
         return "CD" if self.memory <= 700 else "HDD"
 
     def cd_write(self):
+        """
+        Метод возвращает список исполнителей, альбомы которых поместятся на CD-диск (700 Мб).
+        :return: Список исполнителей.
+        """
         cd_data, mem = [], 0
         for w in self.data:
             mem += w.get_memory_album()
@@ -146,3 +149,6 @@ if __name__ == "__main__":
     print("Тесты методов класса 'Storage':")
     print(f"Для хранения этой коллекции подошёл бы: {discography_memory.choice_storage()}")
     print("На CD-диск удалось бы записать исполнителей:", ", ".join(discography_memory.cd_write()))
+
+    import doctest
+    doctest.testmod()
