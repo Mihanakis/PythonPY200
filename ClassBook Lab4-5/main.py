@@ -3,7 +3,7 @@ import re
 
 class Book:
     def __init__(self, file):
-        self.file = file
+        self.file = file    # 6-9, 12, 19-21, 28-34, 41-42, 46-47, 51-54, 58, 66-67, 75-86, 93, 98, 106-118, 122-126
         self.data = []
         self.loader()
         self.cleaner()
@@ -27,8 +27,10 @@ class Book:
         """
         clear_data = []
         for str_ in self.data:
-            str_ = str_.strip('\n')
-            clear_data.append(str_)
+            if str_ not in ['\n']:
+                for symb in ['\n', '\ufeff']:
+                    str_ = str_.strip(symb)
+                clear_data.append(str_)
         self.data = clear_data
 
 
@@ -39,6 +41,17 @@ class BackgroundChecks:
         if not isinstance(enter, type_):
             raise TypeError(f"Введённое значение {enter} - не типа {type_}.")
 
+    @staticmethod
+    def in_range(enter, limit):
+        if enter not in range(1, limit+1):
+            raise ValueError(f"Выбранное значение не в пределах от 1 до {limit}")
+
+    @staticmethod
+    def ask_value(enter, type_):
+        if enter is None:
+            return type_(input(f"Вы не задали значение {type_}. Введите значение: "))
+        else:
+            return enter
 
 class SearchInBook(Book, BackgroundChecks):
     def __init__(self, file):
@@ -59,10 +72,8 @@ class SearchInBook(Book, BackgroundChecks):
         :param question: искомое слово
         :return: количество совпадений
         """
-        if question is None:
-            print("Вы не задали слово. Введите слово количество совпадений которого будем искать:")
-            question = str(input())
-            self.is_type(question, str)
+        question = self.ask_value(question, str)
+        self.is_type(question, str)
         question = question.lower()
         counter = 0
         for str_ in self.data:
@@ -92,11 +103,8 @@ class BookGames(SearchInBook):
         :param question: Номер задаваемой строки
         :return: Предложение из задаваемой строки
         """
-        if question is None:
-            print(self.how_many_str())
-            print(f"Вы не задали номер строки. Выберите номер строки по которому будете гадать:")
-            question = int(input())
-            self.is_type(question, int)
+        question = self.ask_value(question, int)
+        self.is_type(question, int)
         counter, sentence = 0, []
         str_ = self.getter_str(question).split('.')
         for text in str_:
@@ -105,15 +113,6 @@ class BookGames(SearchInBook):
             sentence.append(text)
         if counter == 1:
             return sentence[0] + '.'
-        print(f'В указанной строчке {counter} предложения(ий). Введите № предложения от 1 до {counter}:')
-        index = int(input())
-        if index not in range(1, counter+1):
-            raise ValueError(f"Выбранное значение не в пределах от 1 до {counter}")
+        index = int(input(f'В указанной строчке {counter} предложения(ий). Введите № предложения от 1 до {counter}: '))
+        self.in_range(index, counter)
         return sentence[index-1] + "."
-
-
-if __name__ == "__main__":
-    book = BookGames("Ф.М. Достоевский - Преступление и наказание.txt")
-    print(book.getter_str(1), book.getter_str(2), sep=' - ')
-    print(book.search_word("право"))
-    print(book.divination_by_book(3555))
