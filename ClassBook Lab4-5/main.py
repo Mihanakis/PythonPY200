@@ -4,9 +4,17 @@ import re
 class Book:
     def __init__(self, file):
         self.file = file
-        self.data = []
+        self._data = []
         self.loader()
         self.cleaner()
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, new_data):
+        self._data = new_data
 
     def __str__(self):
         return self.file.strip('txt')
@@ -31,7 +39,7 @@ class Book:
                 for symb in ['\n', '\ufeff']:
                     str_ = str_.strip(symb)
                 clear_data.append(str_)
-        self.data = clear_data
+        self.setter = clear_data  # TODO правильна ли эта запись?
 
 
 class BackgroundChecks:
@@ -64,7 +72,7 @@ class SearchInBook(Book, BackgroundChecks):
         :return: вызываемая строка
         """
         self.is_type(index, int)
-        return self.data[index-1]
+        return self.getter  # TODO правильна ли эта запись?
 
     def search_word(self, question=None) -> print:
         """
@@ -116,3 +124,7 @@ class BookGames(SearchInBook):
         index = int(input(f'В указанной строчке {counter} предложения(ий). Введите № предложения от 1 до {counter}: '))
         self.in_range(index, counter)
         return sentence[index-1] + "."
+
+if __name__ == '__main__':
+    book = BookGames("Ф.М. Достоевский - Преступление и наказание.txt")
+    book.divination_by_book(666)
