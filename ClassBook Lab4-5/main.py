@@ -3,7 +3,7 @@ import re
 
 class Book:
     def __init__(self, file):
-        self.file = file    # 6-9, 12, 19-21, 28-34, 41-42, 46-47, 51-54, 58, 66-67, 75-86, 93, 98, 106-118, 122-126
+        self.file = file
         self.data = []
         self.loader()
         self.cleaner()
